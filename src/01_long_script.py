@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 
 from azureml.core import Dataset, Datastore, Experiment, Model, Webservice, Workspace
@@ -11,13 +12,24 @@ from azureml.data.datapath import DataPath
 from azureml.exceptions import WebserviceException
 from azureml.train.estimator import Estimator
 
+# PREPARE LOGGING
+
+logger = logging.getLogger()
+logger.setLevel("INFO")
+ch = logging.StreamHandler()
+ch.setLevel(logging.INFO)
+formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+ch.setFormatter(formatter)
+logger.addHandler(ch)
+
+
 # PARAMS
 
 TIMESERIESLENGTH = 10
 THRESHOLD = 180.0
 TRAIN_DATA_SPLIT = 0.8
 NUMBER_ESTIMATORS = 10
-TRAIN_FOLDER_NAME = "train"
+TRAIN_FOLDER_NAME = "src/train"
 TRAIN_FILE_NAME = "train.py"
 MODELNAME = "script-classifier"
 SERVICENAME = "script-deployment"
@@ -25,6 +37,7 @@ MODELFILENAME = "model.pkl"
 
 ws = Workspace.from_config()
 exp = Experiment(ws, "MaxFreezerTemperatureExceeded", _create_in_cloud=True)
+logger.info("Experiment created")
 
 # ACCESS DATA
 
@@ -46,7 +59,7 @@ dataset.register(
     description="Output from Stream Analytics",
     create_new_version=True,
 )
-print("dataset registered")
+logger.info("dataset registered")
 
 # PREPARE TRAINING
 
@@ -73,11 +86,14 @@ est = Estimator(
         "sktime",
     ],
 )
+logger.info("Estimator created")
 
 # TRAIN
 
+logger.info("Starting Training")
 run = exp.submit(est)
 run.wait_for_completion(show_output=False, wait_post_processing=True)
+logger.info("Training Completed")
 
 model = run.register_model(
     model_name=MODELNAME,
@@ -92,9 +108,11 @@ model = run.register_model(
     datasets=[("training_data", dataset)],
     resource_configuration=ResourceConfiguration(cpu=1, memory_in_gb=0.5),
 )
+logger.info("Model registered")
 
 # DEPLOY
 
+logger.info("Starting deployment")
 freezer_environment = ws.environments["sktime_freezer_environment"]
 
 try:
@@ -115,9 +133,10 @@ service = Model.deploy(
     deployment_config=AciWebservice.deploy_configuration(cpu_cores=1, memory_gb=1,),
 )
 
-service.wait_for_deployment(show_output=False)
+service.wait_for_deployment(show_output=True)
+logger.info("Model deployed")
 
-print(f"Scoring Uri: '{service.scoring_uri}'")
+logger.info(f"Scoring Uri: '{service.scoring_uri}'")
 
 keyvault = ws.get_default_keyvault()
 keyvault.set_secret(name="webservice-name", value=SERVICENAME)
@@ -125,6 +144,7 @@ keyvault.set_secret(name="MLENDPOINT", value=service.scoring_uri)
 
 # TEST DEPLOYMENT
 
+logger.info("Testing deployment")
 keyvault = ws.get_default_keyvault()
 service = Webservice(ws, keyvault.get_secret("webservice-name"))
 
@@ -134,5 +154,5 @@ with open("deployment/sample_data.json", "r") as fh:
 input_payload = json.dumps(sample_data)
 output = service.run(input_payload)
 
-print(output)
-print(service.get_logs())
+logger.info(output)
+# logger.info(service.get_logs())

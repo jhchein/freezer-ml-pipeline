@@ -1,13 +1,24 @@
+import logging
+
 from azureml.core import Experiment, RunConfiguration, Workspace
 from azureml.core.compute import ComputeTarget
 from azureml.pipeline.core import Pipeline, PipelineData, PipelineParameter
 from azureml.pipeline.steps import EstimatorStep, PythonScriptStep
 from azureml.train.estimator import Estimator
 
+# PREPARE LOGGING
+
+logger = logging.getLogger()
+logger.setLevel("INFO")
+ch = logging.StreamHandler()
+ch.setLevel(logging.INFO)
+formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+ch.setFormatter(formatter)
+logger.addHandler(ch)
+
 # GET WS, EXP, ENV and COMPUTE TARGET
 
 ws = Workspace.from_config()
-
 experiment = Experiment(
     ws, "MaxFreezerTemperatureExceededPipeline", _create_in_cloud=True
 )
@@ -15,6 +26,7 @@ compute_target = ComputeTarget(ws, "freezertrain")
 run_config = RunConfiguration()
 freezer_environment = ws.environments["sktime_freezer_environment"]
 run_config.environment = freezer_environment
+logger.info("Environment complete")
 
 # PIPELINE PARAMS
 
@@ -35,6 +47,7 @@ redeploy_webservice_param = PipelineParameter(name="redeploy", default_value=Tru
 webservicename_param = PipelineParameter(
     name="webservice", default_value="freezerchain-prediction-v0-2"
 )
+logger.info("Prepared Pipeline paramaters")
 
 # DEFINE PIPELINE STEPS
 
@@ -88,7 +101,7 @@ second_prepro_step = PythonScriptStep(
 estimator_step = EstimatorStep(
     name="Train Model",
     estimator=Estimator(
-        source_directory="train",
+        source_directory="src/train",
         entry_script="train_pipeline.py",
         compute_target=compute_target,
         environment_definition=freezer_environment,
@@ -132,6 +145,8 @@ validate_deployment_step = PythonScriptStep(
     allow_reuse=False,
 )
 
+logger.info("Pipeline steps prepared")
+
 # DEFINE STEP DEPENDENCIES
 
 first_prepro_step.run_after(update_dataset_step)
@@ -150,11 +165,13 @@ steps = [
 ]
 
 pipeline = Pipeline(workspace=ws, steps=[steps])
+logger.info("Pipeline preparation done.")
 
 # RUN PIPELINE
-
+logger.info("Starting Pipeline.")
 pipeline_run = experiment.submit(pipeline, pipeline_parameters={"threshold": 180.0})
 pipeline_run.wait_for_completion()
+logger.info("Pipeline complete")
 
 # PUBLISH PIPELINE
 
@@ -162,3 +179,4 @@ published_pipeline = pipeline_run.publish_pipeline(
     name="Freezer_SKTIME_pipeline",
     description="Freezer SKTIME train and deploy pipeline",
 )
+logger.info("Pipeline published")
