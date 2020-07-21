@@ -1,0 +1,89 @@
+{
+  "allevents": [
+    {
+      "temperature": 253.36034838918548,
+      "ambienttemperature": 21.40830011289022,
+      "timeCreated": "2020-04-07T05:51:01.7604291Z",
+      "ConnectionDeviceId": "milkbottleEdge",
+      "ConnectionDeviceGenerationId": "637211838651873534"
+    },
+    {
+      "temperature": 253.05124575297808,
+      "ambienttemperature": 21.136742240114483,
+      "timeCreated": "2020-04-07T05:51:06.7828299Z",
+      "ConnectionDeviceId": "milkbottleEdge",
+      "ConnectionDeviceGenerationId": "637211838651873534"
+    },
+    {
+      "temperature": 253.20221907608251,
+      "ambienttemperature": 21.170109719350055,
+      "timeCreated": "2020-04-07T05:51:11.8052877Z",
+      "ConnectionDeviceId": "milkbottleEdge",
+      "ConnectionDeviceGenerationId": "637211838651873534"
+    },
+    {
+      "temperature": 253.33825033755829,
+      "ambienttemperature": 20.685200958598966,
+      "timeCreated": "2020-04-07T05:51:16.8240122Z",
+      "ConnectionDeviceId": "milkbottleEdge",
+      "ConnectionDeviceGenerationId": "637211838651873534"
+    },
+    {
+      "temperature": 253.70356583674541,
+      "ambienttemperature": 21.441863834365208,
+      "timeCreated": "2020-04-07T05:51:21.8444985Z",
+      "ConnectionDeviceId": "milkbottleEdge",
+      "ConnectionDeviceGenerationId": "637211838651873534"
+    },
+    {
+      "temperature": 253.79429884547972,
+      "ambienttemperature": 21.133470642675398,
+      "timeCreated": "2020-04-07T05:51:26.8649112Z",
+      "ConnectionDeviceId": "milkbottleEdge",
+      "ConnectionDeviceGenerationId": "637211838651873534"
+    },
+    {
+      "temperature": 253.51500099362511,
+      "ambienttemperature": 20.999759158817938,
+      "timeCreated": "2020-04-07T05:51:31.8850267Z",
+      "ConnectionDeviceId": "milkbottleEdge",
+      "ConnectionDeviceGenerationId": "637211838651873534"
+    },
+    {
+      "temperature": 253.053821995646,
+      "ambienttemperature": 20.710163587802167,
+      "timeCreated": "2020-04-07T05:51:36.9044276Z",
+      "ConnectionDeviceId": "milkbottleEdge",
+      "ConnectionDeviceGenerationId": "637211838651873534"
+    },
+    {
+      "temperature": 252.90450877226107,
+      "ambienttemperature": 21.114827556356243,
+      "timeCreated": "2020-04-07T05:51:41.9245882Z",
+      "ConnectionDeviceId": "milkbottleEdge",
+      "ConnectionDeviceGenerationId": "637211838651873534"
+    },
+    {
+      "temperature": 252.68252249862124,
+      "ambienttemperature": 20.994519245109764,
+      "timeCreated": "2020-04-07T05:51:46.9451114Z",
+      "ConnectionDeviceId": "milkbottleEdge",
+      "ConnectionDeviceGenerationId": "637211838651873534"
+    },
+    {
+      "temperature": 252.32300171969538,
+      "ambienttemperature": 20.776223332284122,
+      "timeCreated": "2020-04-07T05:51:51.9680349Z",
+      "ConnectionDeviceId": "milkbottleEdge",
+      "ConnectionDeviceGenerationId": "637211838651873534"
+    },
+    {
+      "temperature": 251.90452107899043,
+      "ambienttemperature": 21.485664722968668,
+      "timeCreated": "2020-04-07T05:51:56.9882857Z",
+      "ConnectionDeviceId": "milkbottleEdge",
+      "ConnectionDeviceGenerationId": "637211838651873534"
+    }
+  ],
+  "ConnectionDeviceId": "milkbottleEdge"
+}
