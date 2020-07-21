@@ -1,10 +1,9 @@
-
 import argparse
-import os
-from azureml.core import Run, Dataset
-
 import json
+import os
+
 import pandas as pd
+from azureml.core import Dataset, Run
 
 time_series_length = 10
 
@@ -12,7 +11,9 @@ time_series_length = 10
 parser = argparse.ArgumentParser()
 parser.add_argument("--dataset_name", type=str, help="name of the input dataset")
 parser.add_argument("--output", type=str, help="output data")
-parser.add_argument("--time_series_length", type=int, help="number of samles per time series")
+parser.add_argument(
+    "--time_series_length", type=int, help="number of samles per time series"
+)
 args = parser.parse_args()
 
 ws = Run.get_context().experiment.workspace
@@ -30,8 +31,9 @@ rawdata_df["allevents"] = rawdata_df["allevents"].apply(lambda x: json.loads(x))
 # Reset PartitionDate Index to a simple range. We'll use it to index our "cases" ("samples")
 rawdata_df.reset_index(drop=True, inplace=True)
 
+
 # sktime expects a specific format. For now the easiest way is to convert our DataFrame to a long format
-# and then use the sktime parser. 
+# and then use the sktime parser.
 def dataframe_to_long(df, size):
     case_id = 0
     for _, case in df.iterrows():
@@ -48,6 +50,7 @@ def dataframe_to_long(df, size):
             # yield case_id, 1, reading_id, values["ambienttemperature"]
 
         case_id += 1  # can't use the row index because we skip rows.
+
 
 df_long = pd.DataFrame(
     dataframe_to_long(rawdata_df, size=args.time_series_length),
