@@ -19,9 +19,7 @@ logger.addHandler(ch)
 # GET WS, EXP, ENV and COMPUTE TARGET
 
 ws = Workspace.from_config()
-experiment = Experiment(
-    ws, "MaxFreezerTemperatureExceededPipeline", _create_in_cloud=True
-)
+experiment = Experiment(ws, "FreezerTemperatureExceededPipeline", _create_in_cloud=True)
 compute_target = ComputeTarget(ws, "freezertrain")
 run_config = RunConfiguration()
 freezer_environment = ws.environments["sktime_freezer_environment"]
@@ -56,7 +54,7 @@ update_dataset_step = PythonScriptStep(
     script_name="00_update_dataset.py",
     arguments=["--dataset_name", dataset_name_param],
     compute_target=compute_target,
-    source_directory="preprocess",
+    source_directory="src/preprocess",
     runconfig=run_config,
     allow_reuse=False,
 )
@@ -74,7 +72,7 @@ first_prepro_step = PythonScriptStep(
     ],
     outputs=[output_df_long],
     compute_target=compute_target,
-    source_directory="preprocess",
+    source_directory="src/preprocess",
     runconfig=run_config,
     allow_reuse=True,
 )
@@ -93,7 +91,7 @@ second_prepro_step = PythonScriptStep(
     inputs=[output_df_long],
     outputs=[output_df_nested],
     compute_target=compute_target,
-    source_directory="preprocess",
+    source_directory="src/preprocess",
     runconfig=run_config,
     allow_reuse=True,
 )
@@ -130,7 +128,7 @@ deploy_step = PythonScriptStep(
         webservicename_param,
     ],
     compute_target=compute_target,
-    source_directory="deployment",
+    source_directory="src/deployment",
     runconfig=run_config,
     allow_reuse=True,
 )
@@ -140,7 +138,7 @@ validate_deployment_step = PythonScriptStep(
     script_name="validate.py",
     arguments=["--webservicename", webservicename_param],
     compute_target=compute_target,
-    source_directory="deployment",
+    source_directory="src/deployment",
     runconfig=run_config,
     allow_reuse=False,
 )
